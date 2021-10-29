@@ -1,6 +1,24 @@
 <script>
+  import { onMount } from "svelte";
   import { EditIcon, EyeOffIcon, PlusSquareIcon } from "svelte-feather-icons";
+  import axios from "axios";
   import Pagination from "./Pagination.svelte";
+
+  let posts = [];
+
+  const getPosts = () => {
+    axios
+      .get("https://jsonplaceholder.typicode.com/posts")
+      // .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        posts = data.data;
+      });
+  };
+
+  onMount(getPosts);
+
+  $: console.log(posts);
 </script>
 
 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
