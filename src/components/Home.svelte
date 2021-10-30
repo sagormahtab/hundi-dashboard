@@ -3,22 +3,20 @@
   import { EditIcon, EyeOffIcon, PlusSquareIcon } from "svelte-feather-icons";
   import axios from "axios";
   import Pagination from "./Pagination.svelte";
+  import TableHead from "./TableHead.svelte";
+  import TableBody from "./TableBody.svelte";
+  import { BASE_SERVER } from "../constants/urls";
 
-  let posts = [];
+  let numbers = [];
+  const theaders = ["Sl No", "Phone No", "Payment Method", "Limit"];
 
-  const getPosts = () => {
-    axios
-      .get("https://jsonplaceholder.typicode.com/posts")
-      // .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        posts = data.data;
-      });
+  const getNumbers = () => {
+    axios.get(`${BASE_SERVER}/api/numbers?limit=50&page=1`).then((res) => {
+      numbers = res.data.docs;
+    });
   };
 
-  onMount(getPosts);
-
-  $: console.log(posts);
+  onMount(getNumbers);
 </script>
 
 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
@@ -37,47 +35,10 @@
 
     <div class="table-responsive">
       <table class="table table-striped table-sm">
-        <thead>
-          <tr>
-            <th scope="col">Sl No.</th>
-            <th scope="col">Phone No</th>
-            <th scope="col">Payment Method</th>
-            <th scope="col">Limit</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>1,001</td>
-            <td>random</td>
-            <td>data</td>
-            <td>placeholder</td>
-            <td>
-              <div class="btn-group me-2">
-                <button type="button" class="btn btn-sm btn-outline-secondary"
-                  ><EditIcon class="me-1" />Change</button
-                >
-                <button type="button" class="btn btn-sm btn-outline-secondary"
-                  ><EyeOffIcon class="me-1" />Disable</button
-                >
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>1,002</td>
-            <td>placeholder</td>
-            <td>irrelevant</td>
-            <td>visual</td>
-            <td>layout</td>
-          </tr>
-        </tbody>
+        <TableHead {theaders} />
+        <TableBody {numbers} />
       </table>
     </div>
     <Pagination />
   </div>
 </main>
-
-<style>
-  tr {
-    vertical-align: middle;
-  }
-</style>
