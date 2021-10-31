@@ -5,14 +5,17 @@
   import Pagination from "./Pagination.svelte";
   import TableHead from "./TableHead.svelte";
   import TableBody from "./TableBody.svelte";
+  import TableSkeleton from "./TableSkeleton.svelte";
   import { BASE_SERVER } from "../constants/urls";
 
   let numbers = [];
+  let isLoading = true;
   const theaders = ["Sl No", "Phone No", "Payment Method", "Limit"];
 
   const getNumbers = () => {
     axios.get(`${BASE_SERVER}/api/numbers?limit=50&page=1`).then((res) => {
       numbers = res.data.docs;
+      isLoading = false;
     });
   };
 
@@ -36,7 +39,11 @@
     <div class="table-responsive">
       <table class="table table-striped table-sm">
         <TableHead {theaders} />
-        <TableBody {numbers} />
+        {#if isLoading}
+          <TableSkeleton />
+        {:else}
+          <TableBody {numbers} />
+        {/if}
       </table>
     </div>
     <Pagination />
