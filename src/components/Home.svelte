@@ -1,6 +1,6 @@
 <script>
   import { onMount } from "svelte";
-  import { EditIcon, EyeOffIcon, PlusSquareIcon } from "svelte-feather-icons";
+  import { PlusSquareIcon } from "svelte-feather-icons";
   import axios from "axios";
   import Pagination from "./Pagination.svelte";
   import TableHead from "./TableHead.svelte";
@@ -9,14 +9,38 @@
   import { BASE_SERVER } from "../constants/urls";
 
   let numbers = [];
+  let paginationInfo = {
+    hasPrevPage: false,
+    hasNextPage: true,
+    page: 1,
+    limit: 10,
+    totalPages: 1,
+  };
   let isLoading = true;
   const theaders = ["Sl No", "Phone No", "Payment Method", "Limit"];
 
+  const handlePrevPage = () => {};
+
   const getNumbers = () => {
-    axios.get(`${BASE_SERVER}/api/numbers?limit=50&page=1`).then((res) => {
-      numbers = res.data.docs;
-      isLoading = false;
-    });
+    axios
+      .get(
+        `${BASE_SERVER}/api/numbers?limit=${paginationInfo.limit}&page=${paginationInfo.page}`
+      )
+      .then((res) => {
+        numbers = res.data.docs;
+        const { hasPrevPage, hasNextPage, page, limit, totalPages } = res.data;
+        paginationInfo = {
+          hasPrevPage,
+          hasNextPage,
+          page,
+          limit,
+          totalPages,
+        };
+        isLoading = false;
+      })
+      .catch((err) => {
+        alert(err.message);
+      });
   };
 
   onMount(getNumbers);
@@ -46,6 +70,6 @@
         {/if}
       </table>
     </div>
-    <Pagination />
+    <Pagination on:prevpage={handlePrevPage} {paginationInfo} />
   </div>
 </main>
