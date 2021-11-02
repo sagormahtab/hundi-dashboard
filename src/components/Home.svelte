@@ -1,5 +1,5 @@
 <script>
-  import { onMount } from "svelte";
+  import { afterUpdate, onMount } from "svelte";
   import { PlusSquareIcon } from "svelte-feather-icons";
   import axios from "axios";
   import Pagination from "./Pagination.svelte";
@@ -12,38 +12,42 @@
   let paginationInfo = {
     hasPrevPage: false,
     hasNextPage: true,
-    page: 1,
-    limit: 10,
+    page: 2,
+    limit: 1,
     totalPages: 1,
   };
   let isLoading = true;
   const theaders = ["Sl No", "Phone No", "Payment Method", "Limit"];
 
-  const handlePrevPage = () => {};
+  const handlePrevPage = async (e) => {
+    paginationInfo.page = paginationInfo.page - 1;
+  };
 
-  const getNumbers = () => {
-    axios
-      .get(
+  // $: getNumbers();
+
+  const getNumbers = async () => {
+    try {
+      const res = await axios.get(
         `${BASE_SERVER}/api/numbers?limit=${paginationInfo.limit}&page=${paginationInfo.page}`
-      )
-      .then((res) => {
-        numbers = res.data.docs;
-        const { hasPrevPage, hasNextPage, page, limit, totalPages } = res.data;
-        paginationInfo = {
-          hasPrevPage,
-          hasNextPage,
-          page,
-          limit,
-          totalPages,
-        };
-        isLoading = false;
-      })
-      .catch((err) => {
-        alert(err.message);
-      });
+      );
+      numbers = res.data.docs;
+      const { hasPrevPage, hasNextPage, page, limit, totalPages } = res.data;
+      paginationInfo = {
+        hasPrevPage,
+        hasNextPage,
+        page,
+        limit,
+        totalPages,
+      };
+      isLoading = false;
+    } catch (err) {
+      alert(err.message);
+    }
   };
 
   onMount(getNumbers);
+  // onMount(() => getNumbers(paginationInfo.page));
+  // afterUpdate(() => getNumbers(paginationInfo.page));
 </script>
 
 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
