@@ -3,8 +3,8 @@
   const dispatch = createEventDispatcher();
 
   export let paginationInfo;
-  const handlePrevious = () => {
-    dispatch("prevpage");
+  const handlePaginate = (value, type) => {
+    dispatch("paginate", { value, type });
   };
 </script>
 
@@ -12,17 +12,29 @@
   <ul class="pagination justify-content-end">
     <li
       class={`page-item ${!paginationInfo.hasPrevPage ? "disabled" : ""}`}
-      on:click={handlePrevious}
+      on:click={() => handlePaginate(-1, "incDec")}
     >
-      <a class="page-link" href="/">Previous</a>
+      <span class="page-link">Previous</span>
     </li>
-    {#each new Array(paginationInfo.totalPages).fill("dk") as tp, i (i)}
-      <li class={`page-item ${paginationInfo.page === i + 1 ? "active" : ""}`}>
-        <a class="page-link" href="/">{i + 1}</a>
+    {#each Array(paginationInfo.totalPages) as _, i (i)}
+      <li
+        class={`page-item ${paginationInfo.page === i + 1 ? "active" : ""}`}
+        on:click={() => handlePaginate(i + 1, "direct")}
+      >
+        <span class="page-link">{i + 1}</span>
       </li>
     {/each}
-    <li class={`page-item ${!paginationInfo.hasNextPage ? "disabled" : ""}`}>
-      <a class="page-link" href="/">Next</a>
+    <li
+      class={`page-item ${!paginationInfo.hasNextPage ? "disabled" : ""}`}
+      on:click={() => handlePaginate(1, "incDec")}
+    >
+      <span class="page-link">Next</span>
     </li>
   </ul>
 </nav>
+
+<style>
+  .page-link {
+    cursor: pointer;
+  }
+</style>

@@ -20,10 +20,13 @@
   const theaders = ["Sl No", "Phone No", "Payment Method", "Limit"];
 
   const handlePrevPage = async (e) => {
-    paginationInfo.page = paginationInfo.page - 1;
+    if (e.detail.type === "incDec") {
+      paginationInfo.page = paginationInfo.page + e.detail.value;
+    } else if (e.detail.type === "direct") {
+      paginationInfo.page = e.detail.value;
+    }
+    await getNumbers();
   };
-
-  // $: getNumbers();
 
   const getNumbers = async () => {
     try {
@@ -46,8 +49,6 @@
   };
 
   onMount(getNumbers);
-  // onMount(() => getNumbers(paginationInfo.page));
-  // afterUpdate(() => getNumbers(paginationInfo.page));
 </script>
 
 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
@@ -74,6 +75,6 @@
         {/if}
       </table>
     </div>
-    <Pagination on:prevpage={handlePrevPage} {paginationInfo} />
+    <Pagination on:paginate={handlePrevPage} {paginationInfo} />
   </div>
 </main>
