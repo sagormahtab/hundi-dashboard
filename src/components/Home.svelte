@@ -12,8 +12,8 @@
   let paginationInfo = {
     hasPrevPage: false,
     hasNextPage: true,
-    page: 2,
-    limit: 1,
+    page: 1,
+    limit: 10,
     totalPages: 1,
   };
   let isLoading = true;

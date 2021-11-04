@@ -639,6 +639,11 @@ supports-color@^7.0.0:
   dependencies:
     has-flag "^4.0.0"
 
+sv-bootstrap-modal@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/sv-bootstrap-modal/-/sv-bootstrap-modal-1.0.3.tgz#e982822118dd5bb38698d49ac5aa10d2d25b7dfc"
+  integrity sha512-HJfG1ZVunXY69qvZosW251I/npI+kAMBsPC/C9dy9KFuYWPKcKlLaLdbHMN1ms7FPwhKJoJqwX/275nRSAaCiQ==
+
 svelte-feather-icons@^3.5.0:
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/svelte-feather-icons/-/svelte-feather-icons-3.5.0.tgz#4da21698feb9ed776f5dd5f8558985be9b5288ac"

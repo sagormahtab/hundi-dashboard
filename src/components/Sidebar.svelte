@@ -9,17 +9,23 @@
   <div class="position-sticky pt-3">
     <ul class="nav flex-column">
       <li class="nav-item">
-        <a class="nav-link active" aria-current="page" href="/">
+        <span class="nav-link active" aria-current="page">
           <HomeIcon />
           Dashboard
-        </a>
+        </span>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/">
+        <span class="nav-link">
           <UsersIcon />
           Users
-        </a>
+        </span>
       </li>
     </ul>
   </div>
 </nav>
+
+<style>
+  .nav-link {
+    cursor: pointer;
+  }
+</style>
