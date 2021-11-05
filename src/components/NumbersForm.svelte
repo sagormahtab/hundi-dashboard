@@ -1,21 +1,38 @@
 <script>
   import Modal from "sv-bootstrap-modal";
-  let isOpen = false;
+  import { createEventDispatcher } from "svelte";
+
+  const dispatch = createEventDispatcher();
+
+  const handleModalClose = () => {
+    dispatch("closemodal");
+  };
+
+  // export let isModalOpen;
+  // export let modalHeaderText;
+  export let modalInfo;
 </script>
 
-<Modal bind:open={isOpen}>
+<Modal
+  bind:open={modalInfo.isModalOpen}
+  dialogClasses="modal-dialog-centered"
+  onClosed={handleModalClose}
+>
   <div class="modal-header">
-    <h5 class="modal-title" id="exampleModalLabel">Edit Info</h5>
+    <h5 class="modal-title" id="exampleModalLabel">
+      {modalInfo.modalHeaderText}
+    </h5>
     <button
       type="button"
       class="btn-close"
       data-bs-dismiss="modal"
       aria-label="Close"
+      on:click={handleModalClose}
     />
   </div>
-  <div class="modal-body">
-    <div class="container-fluid">
-      <form>
+  <form>
+    <div class="modal-body">
+      <div class="container-fluid">
         <div class="mb-3">
           <label for="inputPhone" class="form-label">Phone No</label>
           <input
@@ -23,6 +40,7 @@
             class="form-control"
             id="inputPhone"
             aria-describedby="Phone No"
+            bind:value={modalInfo.number}
           />
         </div>
         <div class="mb-3">
@@ -31,11 +49,12 @@
             id="inputPayMethod"
             class="form-select"
             aria-label="Payment Method"
+            bind:value={modalInfo.paymentMethod}
           >
             <option selected>Choose an option...</option>
             <option value="bkash">Bkash</option>
             <option value="nagad">Nagad</option>
-            <option value="roket">Roket</option>
+            <option value="rocket">Rocket</option>
           </select>
         </div>
         <div class="mb-3">
@@ -45,16 +64,19 @@
             class="form-control"
             id="inputLimit"
             aria-describedby="Limit"
+            bind:value={modalInfo.limit}
           />
         </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
-      </form>
+      </div>
     </div>
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-      >Close</button
-    >
-    <button type="button" class="btn btn-primary">Save changes</button>
-  </div>
+    <div class="modal-footer">
+      <button
+        type="button"
+        class="btn btn-secondary"
+        data-bs-dismiss="modal"
+        on:click={handleModalClose}>Close</button
+      >
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+  </form>
 </Modal>

@@ -7,6 +7,7 @@
   import TableBody from "./TableBody.svelte";
   import TableSkeleton from "./TableSkeleton.svelte";
   import { BASE_SERVER } from "../constants/urls";
+  import NumbersForm from "./NumbersForm.svelte";
 
   let numbers = [];
   let paginationInfo = {
@@ -17,9 +18,18 @@
     totalPages: 1,
   };
   let isLoading = true;
+
+  let modalInfo = {
+    isModalOpen: false,
+    modalHeaderText: "",
+    number: "",
+    paymentMethod: "Choose an option...",
+    limit: "",
+  };
+
   const theaders = ["Sl No", "Phone No", "Payment Method", "Limit"];
 
-  const handlePrevPage = async (e) => {
+  const handlePaginate = async (e) => {
     if (e.detail.type === "incDec") {
       paginationInfo.page = paginationInfo.page + e.detail.value;
     } else if (e.detail.type === "direct") {
@@ -48,6 +58,15 @@
     }
   };
 
+  const handleAddNew = () => {
+    modalInfo.modalHeaderText = "Add Info";
+    modalInfo.isModalOpen = !modalInfo.isModalOpen;
+  };
+
+  const handleModalClose = () => {
+    modalInfo.isModalOpen = false;
+  };
+
   onMount(getNumbers);
 </script>
 
@@ -60,8 +79,10 @@
       class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
     >
       <h2 class="mt-4 h4">List of numbers</h2>
-      <button type="button" class="btn btn-sm btn-outline-secondary"
-        ><PlusSquareIcon class="me-1" />Add New</button
+      <button
+        type="button"
+        class="btn btn-sm btn-outline-secondary"
+        on:click={handleAddNew}><PlusSquareIcon class="me-1" />Add New</button
       >
     </div>
 
@@ -75,6 +96,7 @@
         {/if}
       </table>
     </div>
-    <Pagination on:paginate={handlePrevPage} {paginationInfo} />
+    <NumbersForm {modalInfo} on:closemodal={handleModalClose} />
+    <Pagination on:paginate={handlePaginate} {paginationInfo} />
   </div>
 </main>
