@@ -1,6 +1,9 @@
 <script>
+  import axios from "axios";
+
   import Modal from "sv-bootstrap-modal";
   import { createEventDispatcher } from "svelte";
+  import { BASE_SERVER } from "../constants/urls";
 
   const dispatch = createEventDispatcher();
 
@@ -8,9 +11,44 @@
     dispatch("closemodal");
   };
 
-  // export let isModalOpen;
-  // export let modalHeaderText;
   export let modalInfo;
+  const handleSubmit = () => {
+    if (modalInfo.type === "edit") {
+      axios
+        .put(`${BASE_SERVER}/api/numbers/${modalInfo.id}`, {
+          number: modalInfo.number,
+          paymentMethod: modalInfo.paymentMethod,
+          limit: modalInfo.limit,
+        })
+        .then((res) => {
+          dispatch("editnumber", { num: res.data });
+        })
+        .catch((err) => {
+          alert(err.message);
+        });
+    } else {
+      axios
+        .post(`${BASE_SERVER}/api/numbers`, {
+          number: modalInfo.number,
+          paymentMethod: modalInfo.paymentMethod,
+          limit: modalInfo.limit,
+        })
+        .then((res) => {
+          dispatch("newnumber", { num: res.data });
+        })
+        .catch((err) => {
+          alert(err.message);
+        });
+    }
+
+    modalInfo = {
+      ...modalInfo,
+      isModalOpen: false,
+      number: "",
+      paymentMethod: "",
+      limit: "",
+    };
+  };
 </script>
 
 <Modal
@@ -30,7 +68,7 @@
       on:click={handleModalClose}
     />
   </div>
-  <form>
+  <form on:submit|preventDefault={handleSubmit}>
     <div class="modal-body">
       <div class="container-fluid">
         <div class="mb-3">
@@ -52,9 +90,9 @@
             bind:value={modalInfo.paymentMethod}
           >
             <option selected>Choose an option...</option>
-            <option value="bkash">Bkash</option>
-            <option value="nagad">Nagad</option>
-            <option value="rocket">Rocket</option>
+            <option value="Bkash">Bkash</option>
+            <option value="Nagad">Nagad</option>
+            <option value="Rocket">Rocket</option>
           </select>
         </div>
         <div class="mb-3">

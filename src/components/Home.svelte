@@ -12,7 +12,7 @@
   let numbers = [];
   let paginationInfo = {
     hasPrevPage: false,
-    hasNextPage: true,
+    hasNextPage: false,
     page: 1,
     limit: 10,
     totalPages: 1,
@@ -22,6 +22,7 @@
   let modalInfo = {
     isModalOpen: false,
     modalHeaderText: "",
+    type: "",
     number: "",
     paymentMethod: "Choose an option...",
     limit: "",
@@ -59,12 +60,50 @@
   };
 
   const handleAddNew = () => {
-    modalInfo.modalHeaderText = "Add Info";
-    modalInfo.isModalOpen = !modalInfo.isModalOpen;
+    modalInfo = {
+      type: "add",
+      number: "",
+      paymentMethod: "Choose an option...",
+      limit: "",
+      modalHeaderText: "Add Info",
+      isModalOpen: !modalInfo.isModalOpen,
+    };
   };
 
   const handleModalClose = () => {
     modalInfo.isModalOpen = false;
+  };
+
+  const handleChangeNumberInit = (e) => {
+    modalInfo = {
+      type: "edit",
+      isModalOpen: !modalInfo.isModalOpen,
+      modalHeaderText: "Edit Info",
+      id: e.detail.id,
+      number: e.detail.number,
+      paymentMethod: e.detail.paymentMethod,
+      limit: e.detail.limit,
+    };
+  };
+
+  const handleActiveNumber = (e) => {
+    axios
+      .put(`${BASE_SERVER}/api/toggle/${e.detail.id}`, {
+        active: !e.detail.active,
+      })
+      .then((res) => {
+        const itemIndex = numbers.findIndex((num) => num._id === e.detail.id);
+        numbers[itemIndex].active = res.data.active;
+      });
+  };
+
+  const handleEditNumber = (e) => {
+    const itemIndex = numbers.findIndex((num) => num._id === e.detail.num._id);
+    numbers[itemIndex] = e.detail.num;
+  };
+
+  const handleNewNumber = (e) => {
+    numbers = [...numbers, e.detail.num];
   };
 
   onMount(getNumbers);
@@ -92,11 +131,21 @@
         {#if isLoading}
           <TableSkeleton />
         {:else}
-          <TableBody {numbers} />
+          <TableBody
+            {numbers}
+            on:editnumberinit={handleChangeNumberInit}
+            on:activenumber={handleActiveNumber}
+          />
         {/if}
       </table>
     </div>
-    <NumbersForm {modalInfo} on:closemodal={handleModalClose} />
+    <NumbersForm
+      {numbers}
+      {modalInfo}
+      on:closemodal={handleModalClose}
+      on:newnumber={handleNewNumber}
+      on:editnumber={handleEditNumber}
+    />
     <Pagination on:paginate={handlePaginate} {paginationInfo} />
   </div>
 </main>
