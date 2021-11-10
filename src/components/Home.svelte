@@ -8,6 +8,7 @@
   import TableSkeleton from "./TableSkeleton.svelte";
   import { BASE_SERVER } from "../constants/urls";
   import NumbersForm from "./NumbersForm.svelte";
+  import { Link } from "svelte-routing";
 
   let numbers = [];
   let paginationInfo = {
@@ -147,5 +148,7 @@
       on:editnumber={handleEditNumber}
     />
     <Pagination on:paginate={handlePaginate} {paginationInfo} />
+
+    <Link to="/login">Login</Link>
   </div>
 </main>
