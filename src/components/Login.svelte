@@ -1,60 +1,50 @@
-<main class="form-signin text-center">
-  <form>
-    <h1 class="h3 mb-3 fw-normal">Sign in first</h1>
+<main class="form-wrapper">
+  <div class="form-signin text-center">
+    <form>
+      <h1 class="h3 mb-3 fw-normal">Sign in first</h1>
 
-    <div class="form-floating">
-      <input
-        type="email"
-        class="form-control"
-        id="floatingInput"
-        placeholder="name@example.com"
-      />
-      <label for="floatingInput">Email address</label>
-    </div>
-    <div class="form-floating">
-      <input
-        type="password"
-        class="form-control"
-        id="floatingPassword"
-        placeholder="Password"
-      />
-      <label for="floatingPassword">Password</label>
-    </div>
+      <div class="form-floating">
+        <input
+          type="email"
+          class="form-control"
+          id="floatingInput"
+          placeholder="name@example.com"
+        />
+        <label for="floatingInput">Email address</label>
+      </div>
+      <div class="form-floating">
+        <input
+          type="password"
+          class="form-control"
+          id="floatingPassword"
+          placeholder="Password"
+        />
+        <label for="floatingPassword">Password</label>
+      </div>
 
-    <div class="checkbox mb-3">
-      <label>
-        <input type="checkbox" value="remember-me" /> Remember me
-      </label>
-    </div>
-    <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
-    <p class="mt-5 mb-3 text-muted">&copy; 2017–2021</p>
-  </form>
+      <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button
+      >
+    </form>
+    <p class="mt-5 mb-3 text-muted">
+      &copy;{new Date().getFullYear()} All rights reserved
+    </p>
+  </div>
 </main>
 
 <style>
-  .bd-placeholder-img {
-    font-size: 1.125rem;
-    text-anchor: middle;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    user-select: none;
+  .form-wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding-top: 40px;
+    padding-bottom: 40px;
+    background-color: #f5f5f5;
   }
-
-  @media (min-width: 768px) {
-    .bd-placeholder-img-lg {
-      font-size: 3.5rem;
-    }
-  }
-
   .form-signin {
     width: 100%;
     max-width: 330px;
     padding: 15px;
     margin: auto;
-  }
-
-  .form-signin .checkbox {
-    font-weight: 400;
   }
 
   .form-signin .form-floating:focus-within {

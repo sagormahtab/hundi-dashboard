@@ -8,17 +8,19 @@
 </script>
 
 <main>
-  <Header />
-  <div class="container-fluid">
-    <div class="row">
-      <Router {url}>
-        <div>
-          <Route exact path="/"><Dashboard /></Route>
-          <Route exact path="login" component={Login} />
+  <Router {url}>
+    <div>
+      <Route exact path="/">
+        <div class="container-fluid">
+          <div class="row">
+            <Header />
+            <Dashboard />
+          </div>
         </div>
-      </Router>
+      </Route>
+      <Route exact path="login" component={Login} />
     </div>
-  </div>
+  </Router>
 </main>
 
 <style>

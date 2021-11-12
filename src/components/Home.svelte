@@ -148,7 +148,5 @@
       on:editnumber={handleEditNumber}
     />
     <Pagination on:paginate={handlePaginate} {paginationInfo} />
-
-    <Link to="/login">Login</Link>
   </div>
 </main>
