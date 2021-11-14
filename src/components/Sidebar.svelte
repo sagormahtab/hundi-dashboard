@@ -1,5 +1,17 @@
 <script>
-  import { HomeIcon, UsersIcon } from "svelte-feather-icons";
+  import { getContext, onMount, setContext } from "svelte";
+  import {
+    HomeIcon,
+    UsersIcon,
+    ToggleLeftIcon,
+    ToggleRightIcon,
+  } from "svelte-feather-icons";
+
+  let isOn = false;
+  const handleToggleDelete = () => {
+    isOn = !isOn;
+  };
+  $: setContext("isOn", !isOn);
 </script>
 
 <nav
@@ -19,6 +31,19 @@
           <UsersIcon />
           Users
         </span>
+      </li>
+      <li class="nav-item" on:click={handleToggleDelete}>
+        {#if isOn}
+          <span class="nav-link">
+            <ToggleRightIcon class="text-primary" />
+            Disable Delete
+          </span>
+        {:else}
+          <span class="nav-link">
+            <ToggleLeftIcon />
+            Activate Delete
+          </span>
+        {/if}
       </li>
     </ul>
   </div>
