@@ -107,6 +107,19 @@
     numbers = [...numbers, e.detail.num];
   };
 
+  const handleDeleteNumber = (e) => {
+    axios
+      .delete(`${BASE_SERVER}/api/numbers/${e.detail.id}`)
+      .then((res) => {
+        console.log(res.data);
+        const itemIndex = numbers.findIndex((num) => num._id === e.detail.id);
+        numbers.splice(itemIndex, 1);
+      })
+      .catch((error) => {
+        alert(error.message);
+      });
+  };
+
   onMount(getNumbers);
 </script>
 
@@ -136,6 +149,7 @@
             {numbers}
             on:editnumberinit={handleChangeNumberInit}
             on:activenumber={handleActiveNumber}
+            on:deletenumber={handleDeleteNumber}
           />
         {/if}
       </table>

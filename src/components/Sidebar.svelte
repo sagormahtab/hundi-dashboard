@@ -6,12 +6,17 @@
     ToggleLeftIcon,
     ToggleRightIcon,
   } from "svelte-feather-icons";
+  import { isDeleteOn } from "../store";
 
-  let isOn = false;
+  let isDeleteOn_val;
+
+  isDeleteOn.subscribe((value) => {
+    isDeleteOn_val = value;
+  });
+
   const handleToggleDelete = () => {
-    isOn = !isOn;
+    isDeleteOn.update((n) => !n);
   };
-  $: setContext("isOn", !isOn);
 </script>
 
 <nav
@@ -33,7 +38,7 @@
         </span>
       </li>
       <li class="nav-item" on:click={handleToggleDelete}>
-        {#if isOn}
+        {#if isDeleteOn_val}
           <span class="nav-link">
             <ToggleRightIcon class="text-primary" />
             Disable Delete

@@ -1,6 +1,7 @@
 <script>
-  import { createEventDispatcher } from "svelte";
-  import { EditIcon, EyeOffIcon } from "svelte-feather-icons";
+  import { createEventDispatcher, getContext } from "svelte";
+  import { EditIcon, EyeOffIcon, Trash2Icon } from "svelte-feather-icons";
+  import { isDeleteOn } from "../store";
 
   const dispatch = createEventDispatcher();
   const handleChange = (id, number, paymentMethod, limit) => {
@@ -10,6 +11,16 @@
   const handleActive = (id, active) => {
     dispatch("activenumber", { id, active });
   };
+
+  const handleDelete = (id) => {
+    dispatch("deletenumber", { id });
+  };
+
+  let isDeleteOn_val;
+
+  isDeleteOn.subscribe((value) => {
+    isDeleteOn_val = value;
+  });
 
   export let numbers;
 </script>
@@ -24,27 +35,42 @@
         <td>{num.limit}</td>
         <!-- <td style={{}} onClick={() => deleteNum(num.id)}>Change</td> -->
         <td>
-          <div class="btn-group me-2">
+          {#if isDeleteOn_val}
             <button
               type="button"
               class="btn btn-sm btn-outline-secondary {!num.active
                 ? 'text-white border-white'
                 : ''}"
-              on:click={() =>
-                handleChange(num._id, num.number, num.paymentMethod, num.limit)}
-              ><EditIcon class="me-1" />Change</button
+              on:click={() => handleDelete(num._id)}
+              ><Trash2Icon class="me-1 text-danger" />Delete</button
             >
-            <button
-              type="button"
-              class="btn btn-sm btn-outline-secondary {!num.active
-                ? 'text-white border-white'
-                : ''}"
-              on:click={() => handleActive(num._id, num.active)}
-              ><EyeOffIcon class="me-1" />{!num.active
-                ? "Enable"
-                : "Disable"}</button
-            >
-          </div>
+          {:else}
+            <div class="btn-group me-2">
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-secondary {!num.active
+                  ? 'text-white border-white'
+                  : ''}"
+                on:click={() =>
+                  handleChange(
+                    num._id,
+                    num.number,
+                    num.paymentMethod,
+                    num.limit
+                  )}><EditIcon class="me-1" />Change</button
+              >
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-secondary {!num.active
+                  ? 'text-white border-white'
+                  : ''}"
+                on:click={() => handleActive(num._id, num.active)}
+                ><EyeOffIcon class="me-1" />{!num.active
+                  ? "Enable"
+                  : "Disable"}</button
+              >
+            </div>
+          {/if}
         </td>
       </tr>
     {/each}
