@@ -4,6 +4,7 @@
   import Sidebar from "./components/Sidebar.svelte";
   import Home from "./pages/Home.svelte";
   import Login from "./pages/Login.svelte";
+  import Users from "./pages/Users.svelte";
 
   export let url = "";
 </script>
@@ -20,6 +21,7 @@
           </div>
         </div>
       </Route>
+      <Route exact path="users" component={Users} />
       <Route exact path="login" component={Login} />
     </div>
   </Router>
