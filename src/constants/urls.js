@@ -1,1 +1,1 @@
-export const BASE_SERVER = "https://sagor-app.herokuapp.com";
+export const BASE_SERVER = "https://sagor-api.herokuapp.com";
