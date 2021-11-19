@@ -12,14 +12,23 @@
   };
 
   export let modalInfo;
+
+  const headers = {
+    Authorization: `Bearer ${localStorage.getItem("token")}`,
+  };
+
   const handleSubmit = () => {
     if (modalInfo.type === "edit") {
       axios
-        .put(`${BASE_SERVER}/api/numbers/${modalInfo.id}`, {
-          number: modalInfo.number,
-          paymentMethod: modalInfo.paymentMethod,
-          limit: modalInfo.limit,
-        })
+        .put(
+          `${BASE_SERVER}/api/numbers/${modalInfo.id}`,
+          {
+            number: modalInfo.number,
+            paymentMethod: modalInfo.paymentMethod,
+            limit: modalInfo.limit,
+          },
+          { headers }
+        )
         .then((res) => {
           dispatch("editnumber", { num: res.data });
         })
@@ -28,11 +37,15 @@
         });
     } else {
       axios
-        .post(`${BASE_SERVER}/api/numbers`, {
-          number: modalInfo.number,
-          paymentMethod: modalInfo.paymentMethod,
-          limit: modalInfo.limit,
-        })
+        .post(
+          `${BASE_SERVER}/api/numbers`,
+          {
+            number: modalInfo.number,
+            paymentMethod: modalInfo.paymentMethod,
+            limit: modalInfo.limit,
+          },
+          { headers }
+        )
         .then((res) => {
           dispatch("newnumber", { num: res.data });
         })

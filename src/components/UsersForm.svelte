@@ -15,26 +15,24 @@
   const handleSubmit = () => {
     if (modalInfo.type === "edit") {
       axios
-        .put(`${BASE_SERVER}/api/numbers/${modalInfo.id}`, {
-          number: modalInfo.number,
-          paymentMethod: modalInfo.paymentMethod,
-          limit: modalInfo.limit,
+        .put(`${BASE_SERVER}/api/users/${modalInfo.id}`, {
+          username: modalInfo.username,
+          role: modalInfo.role,
         })
         .then((res) => {
-          dispatch("editnumber", { num: res.data });
+          dispatch("edituser", { user: res.data });
         })
         .catch((err) => {
           alert(err.message);
         });
     } else {
       axios
-        .post(`${BASE_SERVER}/api/numbers`, {
-          number: modalInfo.number,
-          paymentMethod: modalInfo.paymentMethod,
-          limit: modalInfo.limit,
+        .post(`${BASE_SERVER}/api/users`, {
+          username: modalInfo.username,
+          role: modalInfo.role,
         })
         .then((res) => {
-          dispatch("newnumber", { num: res.data });
+          dispatch("newuser", { user: res.data });
         })
         .catch((err) => {
           alert(err.message);
@@ -44,7 +42,7 @@
     modalInfo = {
       ...modalInfo,
       isModalOpen: false,
-      number: "",
+      user: "",
       paymentMethod: "",
       limit: "",
     };
@@ -72,38 +70,26 @@
     <div class="modal-body">
       <div class="container-fluid">
         <div class="mb-3">
-          <label for="inputPhone" class="form-label">Phone No</label>
+          <label for="inputPhone" class="form-label">Username</label>
           <input
             type="text"
             class="form-control"
             id="inputPhone"
-            aria-describedby="Phone No"
-            bind:value={modalInfo.number}
+            aria-describedby="Username"
+            bind:value={modalInfo.username}
           />
         </div>
         <div class="mb-3">
-          <label for="inputPayMethod" class="form-label">Payment Method</label>
+          <label for="inputPayMethod" class="form-label">Role</label>
           <select
             id="inputPayMethod"
             class="form-select"
-            aria-label="Payment Method"
-            bind:value={modalInfo.paymentMethod}
+            aria-label="Role"
+            bind:value={modalInfo.role}
           >
             <option selected>Choose an option...</option>
-            <option value="Bkash">Bkash</option>
-            <option value="Nagad">Nagad</option>
-            <option value="Rocket">Rocket</option>
+            <option value="0">User</option>
           </select>
-        </div>
-        <div class="mb-3">
-          <label for="inputLimit" class="form-label">Limit</label>
-          <input
-            type="text"
-            class="form-control"
-            id="inputLimit"
-            aria-describedby="Limit"
-            bind:value={modalInfo.limit}
-          />
         </div>
       </div>
     </div>

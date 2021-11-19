@@ -6,9 +6,11 @@
     ToggleLeftIcon,
     ToggleRightIcon,
   } from "svelte-feather-icons";
+  import { navigate } from "svelte-routing";
   import { isDeleteOn } from "../store";
 
   let isDeleteOn_val;
+  let activeRoute = "";
 
   isDeleteOn.subscribe((value) => {
     isDeleteOn_val = value;
@@ -16,6 +18,11 @@
 
   const handleToggleDelete = () => {
     isDeleteOn.update((n) => !n);
+  };
+
+  const handleChangeRoute = (route) => {
+    activeRoute = route;
+    navigate(`/${activeRoute}`, { replace: true });
   };
 </script>
 
@@ -31,7 +38,7 @@
           Dashboard
         </span>
       </li>
-      <li class="nav-item">
+      <li class="nav-item" on:click={() => handleChangeRoute("users")}>
         <span class="nav-link">
           <UsersIcon />
           Users

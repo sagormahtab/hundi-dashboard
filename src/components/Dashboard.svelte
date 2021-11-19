@@ -28,6 +28,10 @@
     limit: "",
   };
 
+  const headers = {
+    Authorization: `Bearer ${localStorage.getItem("token")}`,
+  };
+
   const theaders = ["Sl No", "Phone No", "Payment Method", "Limit"];
 
   const handlePaginate = async (e) => {
@@ -42,7 +46,8 @@
   const getNumbers = async () => {
     try {
       const res = await axios.get(
-        `${BASE_SERVER}/api/numbers?limit=${paginationInfo.limit}&page=${paginationInfo.page}`
+        `${BASE_SERVER}/api/numbers?limit=${paginationInfo.limit}&page=${paginationInfo.page}`,
+        { headers }
       );
       numbers = res.data.docs;
       const { hasPrevPage, hasNextPage, page, limit, totalPages } = res.data;
@@ -88,9 +93,13 @@
 
   const handleActiveNumber = (e) => {
     axios
-      .put(`${BASE_SERVER}/api/toggle/${e.detail.id}`, {
-        active: !e.detail.active,
-      })
+      .put(
+        `${BASE_SERVER}/api/toggle/${e.detail.id}`,
+        {
+          active: !e.detail.active,
+        },
+        { headers }
+      )
       .then((res) => {
         const itemIndex = numbers.findIndex((num) => num._id === e.detail.id);
         numbers[itemIndex].active = res.data.active;
@@ -108,7 +117,7 @@
 
   const handleDeleteNumber = (e) => {
     axios
-      .delete(`${BASE_SERVER}/api/numbers/${e.detail.id}`)
+      .delete(`${BASE_SERVER}/api/numbers/${e.detail.id}`, { headers })
       .then((res) => {
         console.log(res.data);
         const itemIndex = numbers.findIndex((num) => num._id === e.detail.id);

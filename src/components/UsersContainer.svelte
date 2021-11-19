@@ -1,5 +1,5 @@
 <script>
-  import { afterUpdate, onMount } from "svelte";
+  import { onMount } from "svelte";
   import { PlusSquareIcon } from "svelte-feather-icons";
   import axios from "axios";
   import Pagination from "./Pagination.svelte";
@@ -23,12 +23,16 @@
     isModalOpen: false,
     modalHeaderText: "",
     type: "",
-    number: "",
+    userber: "",
     paymentMethod: "Choose an option...",
     limit: "",
   };
 
-  const theaders = ["Sl No", "Phone No", "Payment Method", "Limit"];
+  const theaders = ["Sl No", "Username", "Role"];
+
+  const headers = {
+    Authorization: `Bearer ${localStorage.getItem("token")}`,
+  };
 
   const handlePaginate = async (e) => {
     if (e.detail.type === "incDec") {
@@ -42,7 +46,8 @@
   const getUsers = async () => {
     try {
       const res = await axios.get(
-        `${BASE_SERVER}/api/user?limit=${paginationInfo.limit}&page=${paginationInfo.page}`
+        `${BASE_SERVER}/api/users?limit=${paginationInfo.limit}&page=${paginationInfo.page}`,
+        { headers }
       );
       users = res.data.docs;
       const { hasPrevPage, hasNextPage, page, limit, totalPages } = res.data;
@@ -62,7 +67,7 @@
   const handleAddNew = () => {
     modalInfo = {
       type: "add",
-      number: "",
+      userber: "",
       paymentMethod: "Choose an option...",
       limit: "",
       modalHeaderText: "Add Info",
@@ -74,44 +79,31 @@
     modalInfo.isModalOpen = false;
   };
 
-  const handleChangeNumberInit = (e) => {
+  const handleChangeUserInit = (e) => {
     modalInfo = {
       type: "edit",
       isModalOpen: !modalInfo.isModalOpen,
       modalHeaderText: "Edit Info",
       id: e.detail.id,
-      number: e.detail.number,
-      paymentMethod: e.detail.paymentMethod,
-      limit: e.detail.limit,
+      username: e.detail.username,
+      role: e.detail.role,
     };
   };
 
-  const handleActiveNumber = (e) => {
+  const handleEditUser = (e) => {
+    const itemIndex = users.findIndex((user) => user._id === e.detail.user._id);
+    users[itemIndex] = e.detail.user;
+  };
+
+  const handleNewUser = (e) => {
+    users = [...users, e.detail.user];
+  };
+
+  const handleDeleteUser = (e) => {
     axios
-      .put(`${BASE_SERVER}/api/toggle/${e.detail.id}`, {
-        active: !e.detail.active,
-      })
+      .delete(`${BASE_SERVER}/api/user/${e.detail.id}`, { headers })
       .then((res) => {
-        const itemIndex = users.findIndex((num) => num._id === e.detail.id);
-        users[itemIndex].active = res.data.active;
-      });
-  };
-
-  const handleEditNumber = (e) => {
-    const itemIndex = users.findIndex((num) => num._id === e.detail.num._id);
-    users[itemIndex] = e.detail.num;
-  };
-
-  const handleNewNumber = (e) => {
-    users = [...users, e.detail.num];
-  };
-
-  const handleDeleteNumber = (e) => {
-    axios
-      .delete(`${BASE_SERVER}/api/user/${e.detail.id}`)
-      .then((res) => {
-        console.log(res.data);
-        const itemIndex = users.findIndex((num) => num._id === e.detail.id);
+        const itemIndex = users.findIndex((user) => user._id === e.detail.id);
         users.splice(itemIndex, 1);
       })
       .catch((error) => {
@@ -124,9 +116,6 @@
 
 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
   <div class="">
-    <h1 class="h4 mt-3 text-center">
-      Welcome <span class="text-info">user</span>, to your dashboard
-    </h1>
     <div
       class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
     >
@@ -146,9 +135,8 @@
         {:else}
           <UsersTableBody
             {users}
-            on:editnumberinit={handleChangeNumberInit}
-            on:activenumber={handleActiveNumber}
-            on:deletenumber={handleDeleteNumber}
+            on:edituserinit={handleChangeUserInit}
+            on:deleteuser={handleDeleteUser}
           />
         {/if}
       </table>
@@ -157,8 +145,8 @@
       {users}
       {modalInfo}
       on:closemodal={handleModalClose}
-      on:newnumber={handleNewNumber}
-      on:editnumber={handleEditNumber}
+      on:newuser={handleNewUser}
+      on:edituser={handleEditUser}
     />
     <Pagination on:paginate={handlePaginate} {paginationInfo} />
   </div>

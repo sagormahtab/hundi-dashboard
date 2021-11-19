@@ -1,19 +1,15 @@
 <script>
-  import { createEventDispatcher, getContext } from "svelte";
-  import { EditIcon, EyeOffIcon, Trash2Icon } from "svelte-feather-icons";
+  import { createEventDispatcher } from "svelte";
+  import { EditIcon, Trash2Icon } from "svelte-feather-icons";
   import { isDeleteOn } from "../store";
 
   const dispatch = createEventDispatcher();
-  const handleChange = (id, number, paymentMethod, limit) => {
-    dispatch("editnumberinit", { id, number, paymentMethod, limit });
-  };
-
-  const handleActive = (id, active) => {
-    dispatch("activenumber", { id, active });
+  const handleChange = (id, username, role) => {
+    dispatch("edituserinit", { id, username, role });
   };
 
   const handleDelete = (id) => {
-    dispatch("deletenumber", { id });
+    dispatch("deleteuser", { id });
   };
 
   let isDeleteOn_val;
@@ -22,54 +18,32 @@
     isDeleteOn_val = value;
   });
 
-  export let numbers;
+  export let users;
 </script>
 
 <tbody>
-  {#if numbers.length > 0}
-    {#each numbers as num, i (num._id)}
-      <tr style="background: {!num.active ? '#e74c3c' : ''}">
+  {#if users.length > 0}
+    {#each users as user, i (user._id)}
+      <tr>
         <td>{i + 1}</td>
-        <td>{num.number}</td>
-        <td>{num.paymentMethod}</td>
-        <td>{num.limit}</td>
-        <!-- <td style={{}} onClick={() => deleteNum(num.id)}>Change</td> -->
+        <td>{user.username}</td>
+        <td>{user.role}</td>
+        <!-- <td style={{}} onClick={() => deleteUser(user.id)}>Change</td> -->
         <td>
           {#if isDeleteOn_val}
             <button
               type="button"
-              class="btn btn-sm btn-outline-secondary {!num.active
-                ? 'text-white border-white'
-                : ''}"
-              on:click={() => handleDelete(num._id)}
-              ><Trash2Icon class="me-1 text-danger" />Delete</button
+              class="btn btn-sm btn-outline-secondary"
+              on:click={() => handleDelete(user._id)}
+              ><Trash2Icon class="me-1" />Delete</button
             >
           {:else}
-            <div class="btn-group me-2">
-              <button
-                type="button"
-                class="btn btn-sm btn-outline-secondary {!num.active
-                  ? 'text-white border-white'
-                  : ''}"
-                on:click={() =>
-                  handleChange(
-                    num._id,
-                    num.number,
-                    num.paymentMethod,
-                    num.limit
-                  )}><EditIcon class="me-1" />Change</button
-              >
-              <button
-                type="button"
-                class="btn btn-sm btn-outline-secondary {!num.active
-                  ? 'text-white border-white'
-                  : ''}"
-                on:click={() => handleActive(num._id, num.active)}
-                ><EyeOffIcon class="me-1" />{!num.active
-                  ? "Enable"
-                  : "Disable"}</button
-              >
-            </div>
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-secondary"
+              on:click={() => handleChange(user._id, user.username, user.role)}
+              ><EditIcon class="me-1" />Change</button
+            >
           {/if}
         </td>
       </tr>
