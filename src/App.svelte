@@ -3,6 +3,8 @@
   import Home from "./pages/Home.svelte";
   import Login from "./pages/Login.svelte";
   import Users from "./pages/Users.svelte";
+  import Sidebar from "./components/Sidebar.svelte";
+  import Header from "./components/Header.svelte";
 
   export let url = "";
 
@@ -23,6 +25,10 @@
 
 <main>
   <Router {url}>
+    {#if window.location.pathname !== "/login"}
+      <Header />
+      <Sidebar />
+    {/if}
     <Route exact path="/">
       <div class="container-fluid">
         <div class="row">
