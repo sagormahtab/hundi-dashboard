@@ -12,13 +12,23 @@
   };
 
   export let modalInfo;
+
+  const headers = {
+    Authorization: `Bearer ${localStorage.getItem("token")}`,
+  };
+
   const handleSubmit = () => {
     if (modalInfo.type === "edit") {
       axios
-        .put(`${BASE_SERVER}/api/users/${modalInfo.id}`, {
-          username: modalInfo.username,
-          role: modalInfo.role,
-        })
+        .put(
+          `${BASE_SERVER}/api/users/${modalInfo.id}`,
+          {
+            username: modalInfo.username,
+            password: modalInfo.password,
+            role: modalInfo.role,
+          },
+          { headers }
+        )
         .then((res) => {
           dispatch("edituser", { user: res.data });
         })
@@ -27,12 +37,17 @@
         });
     } else {
       axios
-        .post(`${BASE_SERVER}/api/users`, {
-          username: modalInfo.username,
-          role: modalInfo.role,
-        })
+        .post(
+          `${BASE_SERVER}/api/users`,
+          {
+            username: modalInfo.username,
+            password: modalInfo.password,
+            role: modalInfo.role,
+          },
+          { headers }
+        )
         .then((res) => {
-          dispatch("newuser", { user: res.data });
+          dispatch("newuser", { user: res.data.data });
         })
         .catch((err) => {
           alert(err.message);
@@ -42,9 +57,9 @@
     modalInfo = {
       ...modalInfo,
       isModalOpen: false,
-      user: "",
-      paymentMethod: "",
-      limit: "",
+      username: "",
+      password: "",
+      role: "",
     };
   };
 </script>
@@ -70,25 +85,35 @@
     <div class="modal-body">
       <div class="container-fluid">
         <div class="mb-3">
-          <label for="inputPhone" class="form-label">Username</label>
+          <label for="inputUsername" class="form-label">Username</label>
           <input
             type="text"
             class="form-control"
-            id="inputPhone"
+            id="inputUsername"
             aria-describedby="Username"
             bind:value={modalInfo.username}
           />
         </div>
         <div class="mb-3">
-          <label for="inputPayMethod" class="form-label">Role</label>
+          <label for="inputPassword" class="form-label">Password</label>
+          <input
+            type="text"
+            class="form-control"
+            id="inputPassword"
+            aria-describedby="Password"
+            bind:value={modalInfo.password}
+          />
+        </div>
+        <div class="mb-3">
+          <label for="inputRole" class="form-label">Role</label>
           <select
-            id="inputPayMethod"
+            id="inputRole"
             class="form-select"
             aria-label="Role"
             bind:value={modalInfo.role}
           >
             <option selected>Choose an option...</option>
-            <option value="0">User</option>
+            <option value={0}>User</option>
           </select>
         </div>
       </div>

@@ -4,8 +4,8 @@
   import { isDeleteOn } from "../store";
 
   const dispatch = createEventDispatcher();
-  const handleChange = (id, username, role) => {
-    dispatch("edituserinit", { id, username, role });
+  const handleChange = (id, username, password, role) => {
+    dispatch("edituserinit", { id, username, password, role });
   };
 
   const handleDelete = (id) => {
@@ -27,7 +27,8 @@
       <tr>
         <td>{i + 1}</td>
         <td>{user.username}</td>
-        <td>{user.role}</td>
+        <td>{user.password}</td>
+        <td>{user.role == 0 ? "user" : "admin"}</td>
         <!-- <td style={{}} onClick={() => deleteUser(user.id)}>Change</td> -->
         <td>
           {#if isDeleteOn_val}
@@ -41,7 +42,8 @@
             <button
               type="button"
               class="btn btn-sm btn-outline-secondary"
-              on:click={() => handleChange(user._id, user.username, user.role)}
+              on:click={() =>
+                handleChange(user._id, user.username, user.password, user.role)}
               ><EditIcon class="me-1" />Change</button
             >
           {/if}

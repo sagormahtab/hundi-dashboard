@@ -23,12 +23,12 @@
     isModalOpen: false,
     modalHeaderText: "",
     type: "",
-    userber: "",
-    paymentMethod: "Choose an option...",
-    limit: "",
+    username: "",
+    password: "",
+    role: "Choose an option...",
   };
 
-  const theaders = ["Sl No", "Username", "Role"];
+  const theaders = ["Sl No", "Username", "Password", "Role"];
 
   const headers = {
     Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -67,9 +67,9 @@
   const handleAddNew = () => {
     modalInfo = {
       type: "add",
-      userber: "",
-      paymentMethod: "Choose an option...",
-      limit: "",
+      username: "",
+      password: "",
+      role: "Choose an option...",
       modalHeaderText: "Add Info",
       isModalOpen: !modalInfo.isModalOpen,
     };
@@ -86,6 +86,7 @@
       modalHeaderText: "Edit Info",
       id: e.detail.id,
       username: e.detail.username,
+      password: e.detail.password,
       role: e.detail.role,
     };
   };
@@ -101,10 +102,9 @@
 
   const handleDeleteUser = (e) => {
     axios
-      .delete(`${BASE_SERVER}/api/user/${e.detail.id}`, { headers })
+      .delete(`${BASE_SERVER}/api/users/${e.detail.id}`, { headers })
       .then((res) => {
-        const itemIndex = users.findIndex((user) => user._id === e.detail.id);
-        users.splice(itemIndex, 1);
+        users = users.filter((user) => user._id !== e.detail.id);
       })
       .catch((error) => {
         alert(error.message);
