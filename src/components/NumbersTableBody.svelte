@@ -1,6 +1,11 @@
 <script>
   import { createEventDispatcher, getContext } from "svelte";
-  import { EditIcon, EyeOffIcon, Trash2Icon } from "svelte-feather-icons";
+  import {
+    EditIcon,
+    EyeOffIcon,
+    EyeIcon,
+    Trash2Icon,
+  } from "svelte-feather-icons";
   import { isDeleteOn } from "../store";
 
   const dispatch = createEventDispatcher();
@@ -65,10 +70,13 @@
                   ? 'text-white border-white'
                   : ''}"
                 on:click={() => handleActive(num._id, num.active)}
-                ><EyeOffIcon class="me-1" />{!num.active
-                  ? "Enable"
-                  : "Disable"}</button
               >
+                {#if !num.active}
+                  <EyeIcon class="me-1" /> Enable
+                {:else}
+                  <EyeOffIcon class="me-1" /> Disable
+                {/if}
+              </button>
             </div>
           {/if}
         </td>

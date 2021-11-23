@@ -30,8 +30,14 @@
 
   const theaders = ["Sl No", "Username", "Password", "Role"];
 
+  const token = localStorage.getItem("token");
+  if (!token) {
+    alert("Please login again");
+    navigate("/login", { replace: true });
+  }
+
   const headers = {
-    Authorization: `Bearer ${localStorage.getItem("token")}`,
+    Authorization: `Bearer ${token}`,
   };
 
   const handlePaginate = async (e) => {

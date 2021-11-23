@@ -1,5 +1,5 @@
 <script>
-  import { afterUpdate, onMount } from "svelte";
+  import { onMount } from "svelte";
   import { PlusSquareIcon } from "svelte-feather-icons";
   import axios from "axios";
   import Pagination from "./Pagination.svelte";
@@ -8,6 +8,8 @@
   import TableSkeleton from "./TableSkeleton.svelte";
   import { BASE_SERVER } from "../constants/urls";
   import NumbersForm from "./NumbersForm.svelte";
+  import jwt_decode from "jwt-decode";
+  import { navigate } from "svelte-routing";
 
   let numbers = [];
   let paginationInfo = {
@@ -60,7 +62,12 @@
       };
       isLoading = false;
     } catch (err) {
-      alert(err.message);
+      if (err.response?.status === 401) {
+        alert("Please Login again");
+        navigate("/login", { replace: true });
+      } else {
+        alert(err.message);
+      }
     }
   };
 
@@ -126,13 +133,25 @@
       });
   };
 
+  const token = localStorage.getItem("token");
+  if (!token) {
+    alert("Please login again");
+    navigate("/login", { replace: true });
+  }
+
+  const { user } = jwt_decode(token);
+  if (!user || !user.username) {
+    alert("Please login again");
+    navigate("/login", { replace: true });
+  }
+
   onMount(getNumbers);
 </script>
 
 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
   <div class="">
     <h1 class="h4 mt-3 text-center">
-      Welcome <span class="text-info">user</span>, to your dashboard
+      Welcome <span class="text-info">{user.username}</span>, to your dashboard
     </h1>
     <div
       class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"

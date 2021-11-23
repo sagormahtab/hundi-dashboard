@@ -5,9 +5,15 @@
     UsersIcon,
     ToggleLeftIcon,
     ToggleRightIcon,
+    LogOutIcon,
   } from "svelte-feather-icons";
   import { navigate } from "svelte-routing";
   import { isDeleteOn } from "../store";
+
+  const signOutHandler = () => {
+    localStorage.removeItem("token");
+    navigate("/login", { replace: true });
+  };
 
   let isDeleteOn_val;
   let activeRoute = "";
@@ -70,6 +76,12 @@
             Activate Delete
           </span>
         {/if}
+      </li>
+      <li class="nav-item" on:click={signOutHandler}>
+        <span class={`nav-link`}>
+          <LogOutIcon />
+          Sign Out
+        </span>
       </li>
     </ul>
   </div>

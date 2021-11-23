@@ -11,11 +11,6 @@
   >
     <span class="navbar-toggler-icon" />
   </button>
-  <div class="navbar-nav">
-    <div class="nav-item text-nowrap">
-      <span class="nav-link px-3">Sign out</span>
-    </div>
-  </div>
 </header>
 
 <style>
@@ -30,14 +25,5 @@
   .navbar .navbar-toggler {
     top: 0.25rem;
     right: 1rem;
-  }
-
-  @media (max-width: 767.98px) {
-    .navbar-nav {
-      display: none;
-    }
-  }
-  .nav-link {
-    cursor: pointer;
   }
 </style>

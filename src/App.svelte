@@ -25,18 +25,20 @@
 
 <main>
   <Router {url}>
-    {#if window.location.pathname !== "/login"}
-      <Header />
-      <Sidebar />
-    {/if}
     <Route exact path="/">
       <div class="container-fluid">
         <div class="row">
+          <Header />
+          <Sidebar />
           <Home />
         </div>
       </div>
     </Route>
-    <Route exact path="users" component={Users} />
+    <Route exact path="/users">
+      <Header />
+      <Sidebar />
+      <Users />
+    </Route>
     <Route exact path="login" component={Login} />
   </Router>
 </main>
