@@ -1,14 +1,21 @@
 <script>
-  import { createEventDispatcher, getContext } from "svelte";
+  import { createEventDispatcher } from "svelte";
   import {
     EditIcon,
     EyeOffIcon,
     EyeIcon,
     Trash2Icon,
+    MinusSquareIcon,
+    SaveIcon,
   } from "svelte-feather-icons";
+  import axios from "axios";
   import { isDeleteOn } from "../store";
+  import { BASE_SERVER } from "../constants/urls";
 
   const dispatch = createEventDispatcher();
+  let reduceInputShow = false;
+  let reduceInputId = "";
+  let reduceAmount = 0;
   const handleChange = (id, number, paymentMethod, limit) => {
     dispatch("editnumberinit", { id, number, paymentMethod, limit });
   };
@@ -21,6 +28,30 @@
     dispatch("deletenumber", { id });
   };
 
+  const toggleReduceInput = (id) => {
+    reduceInputId = id;
+    reduceInputShow = true;
+  };
+
+  const headers = {
+    Authorization: `Bearer ${localStorage.getItem("token")}`,
+  };
+
+  const handleReduce = (id) => {
+    axios
+      .post(
+        `${BASE_SERVER}/api/limit/${id}`,
+        { amount: reduceAmount },
+        { headers }
+      )
+      .then((res) => {
+        dispatch("reducenumber", { id, limit: res.data.limit });
+      })
+      .catch((error) => {
+        alert(error.message);
+      });
+  };
+
   let isDeleteOn_val;
 
   isDeleteOn.subscribe((value) => {
@@ -28,6 +59,7 @@
   });
 
   export let numbers;
+  export let role;
 </script>
 
 <tbody>
@@ -37,7 +69,19 @@
         <td>{i + 1}</td>
         <td>{num.number}</td>
         <td>{num.paymentMethod}</td>
-        <td>{num.limit}</td>
+        {#if reduceInputShow && reduceInputId === num._id}
+          <td>
+            <input
+              type="text"
+              class="form-control"
+              id="inputReduce"
+              aria-describedby="Reduce Amount"
+              bind:value={reduceAmount}
+            />
+          </td>
+        {:else}
+          <td>{num.limit}</td>
+        {/if}
         <!-- <td style={{}} onClick={() => deleteNum(num.id)}>Change</td> -->
         <td>
           {#if isDeleteOn_val}
@@ -49,6 +93,22 @@
               on:click={() => handleDelete(num._id)}
               ><Trash2Icon class="me-1 text-danger" />Delete</button
             >
+          {:else if role === 0}
+            {#if reduceInputShow}
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-secondary"
+                on:click={() => handleReduce(num._id)}
+                ><SaveIcon class="me-1" />Save</button
+              >
+            {:else}
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-secondary"
+                on:click={() => toggleReduceInput(num._id)}
+                ><MinusSquareIcon class="me-1" />Reduce</button
+              >
+            {/if}
           {:else}
             <div class="btn-group me-2">
               <button

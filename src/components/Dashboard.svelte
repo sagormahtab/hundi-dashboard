@@ -30,6 +30,20 @@
     limit: "",
   };
 
+  const token = localStorage.getItem("token");
+  if (!token) {
+    alert("Please login again");
+    navigate("/login", { replace: true });
+  }
+
+  const { user } = jwt_decode(token);
+  if (!user || !user.username) {
+    alert("Please login again");
+    navigate("/login", { replace: true });
+  }
+  let role = "";
+  role = user.role;
+
   const headers = {
     Authorization: `Bearer ${localStorage.getItem("token")}`,
   };
@@ -45,12 +59,16 @@
     await getNumbers();
   };
 
+  let getNumbersURL = "";
+  if (role === 0) {
+    getNumbersURL = `${BASE_SERVER}/api/active?limit=${paginationInfo.limit}&page=${paginationInfo.page}`;
+  } else {
+    getNumbersURL = `${BASE_SERVER}/api/numbers?limit=${paginationInfo.limit}&page=${paginationInfo.page}`;
+  }
+
   const getNumbers = async () => {
     try {
-      const res = await axios.get(
-        `${BASE_SERVER}/api/numbers?limit=${paginationInfo.limit}&page=${paginationInfo.page}`,
-        { headers }
-      );
+      const res = await axios.get(getNumbersURL, { headers });
       numbers = res.data.docs;
       const { hasPrevPage, hasNextPage, page, limit, totalPages } = res.data;
       paginationInfo = {
@@ -101,7 +119,7 @@
   const handleActiveNumber = (e) => {
     axios
       .put(
-        `${BASE_SERVER}/api/toggle/${e.detail.id}`,
+        `${BASE_SERVER}/api/numbers/${e.detail.id}`,
         {
           active: !e.detail.active,
         },
@@ -133,17 +151,10 @@
       });
   };
 
-  const token = localStorage.getItem("token");
-  if (!token) {
-    alert("Please login again");
-    navigate("/login", { replace: true });
-  }
-
-  const { user } = jwt_decode(token);
-  if (!user || !user.username) {
-    alert("Please login again");
-    navigate("/login", { replace: true });
-  }
+  const handleReduceNumber = (e) => {
+    const itemIndex = numbers.findIndex((num) => num._id === e.detail.id);
+    numbers[itemIndex].limit = e.detail.limit;
+  };
 
   onMount(getNumbers);
 </script>
@@ -172,9 +183,11 @@
         {:else}
           <NumbersTableBody
             {numbers}
+            {role}
             on:editnumberinit={handleChangeNumberInit}
             on:activenumber={handleActiveNumber}
             on:deletenumber={handleDeleteNumber}
+            on:reducenumber={handleReduceNumber}
           />
         {/if}
       </table>
