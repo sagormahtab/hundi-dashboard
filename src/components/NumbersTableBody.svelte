@@ -7,15 +7,22 @@
     Trash2Icon,
     MinusSquareIcon,
     SaveIcon,
+    XSquareIcon,
   } from "svelte-feather-icons";
   import axios from "axios";
-  import { isDeleteOn } from "../store";
+  import { isDeleteOn, reduceInputShow } from "../store";
   import { BASE_SERVER } from "../constants/urls";
 
   const dispatch = createEventDispatcher();
-  let reduceInputShow = false;
+  let reduceInputShow_val = false;
   let reduceInputId = "";
   let reduceAmount = 0;
+  let isButtonDisabled = false;
+
+  reduceInputShow.subscribe((value) => {
+    reduceInputShow_val = value;
+  });
+
   const handleChange = (id, number, paymentMethod, limit) => {
     dispatch("editnumberinit", { id, number, paymentMethod, limit });
   };
@@ -28,9 +35,14 @@
     dispatch("deletenumber", { id });
   };
 
+  const handleCancel = () => {
+    reduceInputShow.set(false);
+    reduceInputId = "";
+  };
+
   const toggleReduceInput = (id) => {
     reduceInputId = id;
-    reduceInputShow = true;
+    reduceInputShow.set(true);
   };
 
   const headers = {
@@ -38,6 +50,7 @@
   };
 
   const handleReduce = (id) => {
+    isButtonDisabled = true;
     axios
       .post(
         `${BASE_SERVER}/api/limit/${id}`,
@@ -45,9 +58,11 @@
         { headers }
       )
       .then((res) => {
+        isButtonDisabled = false;
         dispatch("reducenumber", { id, limit: res.data.limit });
       })
       .catch((error) => {
+        isButtonDisabled = false;
         alert(error.message);
       });
   };
@@ -69,7 +84,7 @@
         <td>{i + 1}</td>
         <td>{num.number}</td>
         <td>{num.paymentMethod}</td>
-        {#if reduceInputShow && reduceInputId === num._id}
+        {#if reduceInputShow_val && reduceInputId === num._id}
           <td>
             <input
               type="text"
@@ -94,13 +109,27 @@
               ><Trash2Icon class="me-1 text-danger" />Delete</button
             >
           {:else if role === 0}
-            {#if reduceInputShow}
-              <button
-                type="button"
-                class="btn btn-sm btn-outline-secondary"
-                on:click={() => handleReduce(num._id)}
-                ><SaveIcon class="me-1" />Save</button
-              >
+            {#if reduceInputShow_val && reduceInputId === num._id}
+              <div class="btn-group me-2">
+                <button
+                  type="button"
+                  disabled={isButtonDisabled}
+                  class="btn btn-sm btn-outline-secondary"
+                  on:click={() => handleReduce(num._id)}
+                  ><SaveIcon class="me-1" /><span class="btn-text-hide"
+                    >Save</span
+                  ></button
+                >
+                <button
+                  type="button"
+                  disabled={isButtonDisabled}
+                  class="btn btn-sm btn-outline-secondary"
+                  on:click={handleCancel}
+                  ><XSquareIcon class="me-1" /><span class="btn-text-hide"
+                    >Cancel</span
+                  ></button
+                >
+              </div>
             {:else}
               <button
                 type="button"
@@ -148,5 +177,11 @@
 <style>
   tr {
     vertical-align: middle;
+  }
+
+  @media (max-width: 575px) {
+    .btn-text-hide {
+      display: none;
+    }
   }
 </style>

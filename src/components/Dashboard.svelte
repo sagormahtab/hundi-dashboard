@@ -10,6 +10,7 @@
   import NumbersForm from "./NumbersForm.svelte";
   import jwt_decode from "jwt-decode";
   import { navigate } from "svelte-routing";
+  import { reduceInputShow, userRole } from "../store";
 
   let numbers = [];
   let paginationInfo = {
@@ -43,6 +44,7 @@
   }
   let role = "";
   role = user.role;
+  userRole.set(role);
 
   const headers = {
     Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -154,6 +156,7 @@
   const handleReduceNumber = (e) => {
     const itemIndex = numbers.findIndex((num) => num._id === e.detail.id);
     numbers[itemIndex].limit = e.detail.limit;
+    reduceInputShow.set(false);
   };
 
   onMount(getNumbers);
@@ -168,11 +171,13 @@
       class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
     >
       <h2 class="mt-4 h4">List of numbers</h2>
-      <button
-        type="button"
-        class="btn btn-sm btn-outline-secondary"
-        on:click={handleAddNew}><PlusSquareIcon class="me-1" />Add New</button
-      >
+      {#if role !== 0}
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-secondary"
+          on:click={handleAddNew}><PlusSquareIcon class="me-1" />Add New</button
+        >
+      {/if}
     </div>
 
     <div class="table-responsive">

@@ -8,7 +8,7 @@
     LogOutIcon,
   } from "svelte-feather-icons";
   import { navigate } from "svelte-routing";
-  import { isDeleteOn } from "../store";
+  import { isDeleteOn, userRole } from "../store";
 
   const signOutHandler = () => {
     localStorage.removeItem("token");
@@ -17,6 +17,11 @@
 
   let isDeleteOn_val;
   let activeRoute = "";
+  let role = null;
+
+  userRole.subscribe((value) => {
+    role = value;
+  });
 
   isDeleteOn.subscribe((value) => {
     isDeleteOn_val = value;
@@ -58,25 +63,27 @@
           Dashboard
         </span>
       </li>
-      <li class="nav-item" on:click={() => handleChangeRoute("users")}>
-        <span class={`nav-link ${activeRoute === "users" ? "active" : ""}`}>
-          <UsersIcon />
-          Users
-        </span>
-      </li>
-      <li class="nav-item" on:click={handleToggleDelete}>
-        {#if isDeleteOn_val}
-          <span class="nav-link">
-            <ToggleRightIcon class="text-primary" />
-            Disable Delete
+      {#if role !== 0}
+        <li class="nav-item" on:click={() => handleChangeRoute("users")}>
+          <span class={`nav-link ${activeRoute === "users" ? "active" : ""}`}>
+            <UsersIcon />
+            Users
           </span>
-        {:else}
-          <span class="nav-link">
-            <ToggleLeftIcon />
-            Activate Delete
-          </span>
-        {/if}
-      </li>
+        </li>
+        <li class="nav-item" on:click={handleToggleDelete}>
+          {#if isDeleteOn_val}
+            <span class="nav-link">
+              <ToggleRightIcon class="text-primary" />
+              Disable Delete
+            </span>
+          {:else}
+            <span class="nav-link">
+              <ToggleLeftIcon />
+              Activate Delete
+            </span>
+          {/if}
+        </li>
+      {/if}
       <li class="nav-item" on:click={signOutHandler}>
         <span class={`nav-link`}>
           <LogOutIcon />
